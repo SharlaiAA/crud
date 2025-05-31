@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almighty (ALM) - Мемкоин на Solana</title>
+    <style>
+        :root {
+            --primary: #00ffbd;
+            --secondary: #9945FF;
+            --dark: #121212;
+            --light: #f8f8f8;
+            --accent: #14F195;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo img {
+            height: 60px;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .contract-address {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: monospace;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        nav li {
+            margin: 0 1.5rem;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .price-display {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .current-price {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-change {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .chart-container {
+            height: 400px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(20, 241, 149, 0.1), rgba(153, 69, 255, 0.1));
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            background-color: rgba(20, 241, 149, 0.2);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .positive {
+            color: var(--accent);
+        }
+        
+        .negative {
+            color: #FF4567;
+        }
+        
+        .buy-button {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: var(--dark);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block;
+            margin: 2rem auto;
+            text-decoration: none;
+            text-align: center;
+            width: fit-content;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 255, 189, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .team-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+        
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            margin: 0 1rem;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://placeholder.com/60" alt="ALM Logo" id="logo-img">
+            <h1>Almighty (ALM)</h1>
+        </div>
+        <p class="tagline">Самый могущественный мемкоин в экосистеме Solana</p>
+        <div class="contract-address">Контракт: ALM... (полный адрес будет здесь)</div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#about">О проекте</a></li>
+            <li><a href="#team">Команда</a></li>
+            <li><a href="#chart">График</a></li>
+            <li><a href="#purchases">Покупки</a></li>
+            <li><a href="#liquidity">Ликвидность</a></li>
+            <li><a href="#roadmap">Дорожная карта</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="price-display">
+            <div class="current-price">$0.0069</div>
+            <div class="price-change positive">+420.69% (24ч)</div>
+        </div>
+        
+        <a href="#" class="buy-button">Купить ALM на Raydium</a>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">$1.2M</div>
+                <div class="stat-label">Рыночная капитализация</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$420K</div>
+                <div class="stat-label">Ликвидность</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">69,420</div>
+                <div class="stat-label">Держателей</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1B</div>
+                <div class="stat-label">Общий выпуск</div>
+            </div>
+        </div>
+        
+        <section id="team">
+            <h2>Создатели Almighty</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Фото</th>
+                        <th>Имя</th>
+                        <th>Роль</th>
+                        <th>Контакты</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="https://i.imgur.com/placeholder.jpg" alt="GoCoin" class="team-photo"></td>
+                        <td>GoCoin</td>
+                        <td>Основатель, Разработчик</td>
+                        <td>@GoCoin (TG)</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://i.imgur.com/placeholder.jpg" alt="Sharelay" class="team-photo"></td>
+                        <td>Sharelay</td>
+                        <td>Маркетинг, Комьюнити</td>
+                        <td>@Sharelay (TG)</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://i.imgur.com/placeholder.jpg" alt="Blonk" class="team-photo"></td>
+                        <td>Blonk</td>
+                        <td>Дизайнер, Контент</td>
+                        <td>@BlonkDesign (TG)</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://i.imgur.com/placeholder.jpg" alt="KeyGen" class="team-photo"></td>
+                        <td>KeyGen</td>
+                        <td>Безопасность, Аналитика</td>
+                        <td>@KeyGenSec (TG)</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://i.imgur.com/placeholder.jpg" alt="DeepSeek" class="team-photo"></td>
+                        <td>DeepSeek</td>
+                        <td>AI стратегия, Развитие</td>
+                        <td>@DeepSeekAI (TG)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section id="chart">
+            <h2>График цен ALM</h2>
+            <div class="chart-container">
+                <div class="chart-placeholder">
+                    График роста ALM (в реальном сайте будет реальный график)
+                </div>
+            </div>
+            <p>ALM показывает устойчивый рост с момента запуска. Наш токен уже вырос на 420.69% и продолжает набирать обороты!</p>
+        </section>
+        
+        <section id="purchases">
+            <h2>Последние покупки</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Время</th>
+                        <th>Покупатель</th>
+                        <th>Количество ALM</th>
+                        <th>Сумма (SOL)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2 мин назад</td>
+                        <td>7x3...8f2</td>
+                        <td>1,000,000</td>
+                        <td>6.9</td>
+                    </tr>
+                    <tr>
+                        <td>15 мин назад</td>
+                        <td>4k2...1j5</td>
+                        <td>500,000</td>
+                        <td>3.45</td>
+                    </tr>
+                    <tr>
+                        <td>32 мин назад</td>
+                        <td>9q8...3m4</td>
+                        <td>2,500,000</td>
+                        <td>17.25</td>
+                    </tr>
+                    <tr>
+                        <td>1 ч назад</td>
+                        <td>1p5...7n9</td>
+                        <td>750,000</td>
+                        <td>5.175</td>
+                    </tr>
+                    <tr>
+                        <td>2 ч назад</td>
+                        <td>3r6...2k8</td>
+                        <td>3,000,000</td>
+                        <td>20.7</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section id="liquidity">
+            <h2>Ликвидность</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Пул</th>
+                        <th>ALM в пуле</th>
+                        <th>SOL в пуле</th>
+                        <th>Общая ликвидность</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Raydium (ALM/SOL)</td>
+                        <td>420,000,000</td>
+                        <td>2,898</td>
+                        <td>$420,000</td>
+                    </tr>
+                    <tr>
+                        <td>Orca (ALM/USDC)</td>
+                        <td>210,000,000</td>
+                        <td>105,000 USDC</td>
+                        <td>$210,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section id="about">
+            <h2>О Almighty (ALM)</h2>
+            <p>Almighty (ALM) - это мемкоин на блокчейне Solana, созданный для тех, кто верит в абсолютную мощь криптовалютного рынка. Наша цель - не просто быть очередным мемкоином, а стать символом финансовой свободы и веселья в экосистеме Solana.</p>
+            <p>ALM имеет фиксированное предложение в 1 миллиард токенов, без дополнительной эмиссии. Команда отказалась от доли разработчиков, чтобы токен был по-настоящему децентрализованным.</p>
+        </section>
+        
+        <section id="roadmap">
+            <h2>Дорожная карта</h2>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li style="margin-bottom: 0.5rem;">✅ Запуск токена и ликвидности (Q1 2024)</li>
+                <li style="margin-bottom: 0.5rem;">🔄 Листинг на централизованных биржах (Q2 2024)</li>
+                <li style="margin-bottom: 0.5rem;">🔜 Создание Almighty DAO (Q3 2024)</li>
+                <li style="margin-bottom: 0.5rem;">🔜 Almighty NFT коллекция (Q4 2024)</li>
+            </ul>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="social-links">
+            <a href="#">Twitter</a>
+            <a href="#">Telegram</a>
+            <a href="#">Discord</a>
+            <a href="#">GitHub</a>
+        </div>
+        <p>© 2024 Almighty (ALM). All rights reserved.</p>
+        <p>Это не финансовый совет. Криптовалюты - это высокорисковые активы.</p>
+    </footer>
+</body>
+</html>
