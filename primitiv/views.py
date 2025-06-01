@@ -3,6 +3,8 @@ from . import templates
 
 
 def web1(request):
-    return render(request, templates.site1)
+    return render(request, 'site1.html')
 
-# Create your views here.
+
+def home(request):
+    return render(request, 'home.html', {})
