@@ -30,4 +30,5 @@ def login_user(request):
 
 
 def logout_user(request):
-    pass
+    logout(request)
+    messages.success(request, 'Вы вышли из аккаунта')
