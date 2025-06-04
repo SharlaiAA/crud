@@ -1,25 +1,58 @@
 {% extends "base.html" %}
 {%block content%}
 {% if user.is_authenticated %}
-<h1> Hello World </h1>
-{% else %}
-<div class="col-md-6 offset-md-3">
-<h1> Войдите в аккаунт </h1>
-<br>
-<form method="POST" action={% url 'home' %}>
-    {% csrf_token %}
-    <form>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Логин</label>
-    <input type="text" class="form-control" name="user_name", placeholder="Введите имя пользователя" required>
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Пароль</label>
-    <input type="password" class="form-control" name="password", placeholder="Введите пароль" required>
-  </div>
+
+
+  {%if records%}
+    <h1> Записи пользователей </h1>
+      <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Почта</th>
+        <th scope="col">Номер телефона</th>
+        <th scope="col">Адрес</th>
+        <th scope="col">Город</th>
+        <th scope="col">Дата создания</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for record in records%}
+      <tr>
+        <th scope="row">{{record.id}}</th>
+        <td>{{record.first_name}}</td>
+        <td>{{record.last_name}}</td>
+        <td>{{record.email}}</td>
+        <td>{{record.phone_number}}</td>
+        <td>{{record.address}}</td>
+        <td>{{record.city}}</td>
+        <td>{{record.created_at}}</td>
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+  {%endif%}
+
+
+  {% else %}
+  <div class="col-md-6 offset-md-3">
+  <h1> Войдите в аккаунт </h1>
   <br>
-  <button type="submit" class="btn btn-secondary">Войти</button>
-</form>
-</div>
+  <form method="POST" action={% url 'home' %}>
+      {% csrf_token %}
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Логин</label>
+      <input type="text" class="form-control" name="user_name", placeholder="Введите имя пользователя" required>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Пароль</label>
+      <input type="password" class="form-control" name="password", placeholder="Введите пароль" required>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-secondary">Войти</button>
+  </form>
+  </div>
 {% endif %}
 {%endblock%}
