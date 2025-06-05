@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{%block content%}
+{% if user.is_authenticated %}
+
+
+    <h1> Записи пользователя </h1>
+      <table class="table table-striped table-hower">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Почта</th>
+        <th scope="col">Номер телефона</th>
+        <th scope="col">Адрес</th>
+        <th scope="col">Город</th>
+        <th scope="col">Дата создания</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">{{record.id}}</th>
+        <td>{{record.first_name}}</td>
+        <td>{{record.last_name}}</td>
+        <td>{{record.email}}</td>
+        <td>{{record.phone_number}}</td>
+        <td>{{record.address}}</td>
+        <td>{{record.city}}</td>
+        <td>{{record.created_at}}</td>
+      </tr>
+    </tbody>
+  </table>
+ 
+{% else %}
+<h1> Необходимо войти </h1> 
+{%endif%}
+{%endblock%}
