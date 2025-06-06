@@ -2,36 +2,46 @@
 {%block content%}
 {% if user.is_authenticated %}
 
+  <div class="card" style="width: 80rem;">
+    <div class="card-body">
+      <h5 class="card-title">Пользователь</h5>
+      <h3 class="card-subtitle mb-2 text-body-primary">{{record.first_name}} {{record.last_name}}</h3>
+      <p class="card-text">Уникальный идентификатор пользователя: {{record.id}}</p>
+      <p class="card-text">Почтовый адрес пользователя: {{record.email}}</p>
+      <h6 class="card-subtitle mb-2 text-body-secondary">Город: {{record.city}}
+        <br>
+        <br>
 
+      Дата создания: {{record.created_at}}</h6>
+    </div>
+  </div>
+  <br>
+  {%if reviews%}
     <h1> Записи пользователя </h1>
       <table class="table table-striped table-hower">
     <thead class="table-dark">
       <tr>
-        <th scope="col">id</th>
-        <th scope="col">Фамилия</th>
-        <th scope="col">Имя</th>
-        <th scope="col">Почта</th>
-        <th scope="col">Номер телефона</th>
-        <th scope="col">Адрес</th>
-        <th scope="col">Город</th>
-        <th scope="col">Дата создания</th>
+        <th scope="col">Отзыв</th>
+        <th scope="col">Дата оставления</th>
       </tr>
     </thead>
     <tbody>
+      {%for review in reviews%}
       <tr>
-        <th scope="row">{{record.id}}</th>
-        <td>{{record.first_name}}</td>
-        <td>{{record.last_name}}</td>
-        <td>{{record.email}}</td>
-        <td>{{record.phone_number}}</td>
-        <td>{{record.address}}</td>
-        <td>{{record.city}}</td>
-        <td>{{record.created_at}}</td>
-      </tr>
+        <th>{{review}}</th>
+        <td>{{review.created_at}}</td>
+        {%if user.id == record.id%}
+
+          <td><a href="{%url 'delete_review' review.id%}">Удалить</a></td>
+
+        {%endif%}
+        </tr>
+      {%endfor%}
     </tbody>
-  </table>
- 
-{% else %}
+  {% else %}
+  <h1>Пользователь ещё не оставил ни одной записи</h1>
+  {%endif%}
+{%else%}
 <h1> Необходимо войти </h1> 
 {%endif%}
 {%endblock%}

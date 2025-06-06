@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
-from .models import Record
+from .models import Record, Reviews
 from . import templates
 
 
@@ -12,8 +12,8 @@ def web1(request):
 
 def home(request):
     
-    records = Record.objects.all()
-    
+    reviews = Reviews.objects.select_related('user_id').all()
+
     if request.method == "POST":
         user_name = request.POST['user_name']
         password = request.POST['password']
@@ -27,7 +27,7 @@ def home(request):
             messages.success(request, 'Не получилось войти')
             return redirect('home')
     else:
-        return render(request, 'home.html', {'records' : records})
+        return render(request, 'home.html', {'reviews' : reviews})
 
 
 def login_user(request):
@@ -61,8 +61,30 @@ def register_user(request):
 def customer_record(request, pk):
     if request.user.is_authenticated:
         #Looking up a record
-        record = Record.objects.get(id=pk)
-        return render(request, 'record.html', {'record' : record})
+        record = Record.objects.get(id = pk)
+        reviews = Reviews.objects.filter(user_id = pk)
+        return render(request, 'record.html', {'record' : record, 'reviews' : reviews})
     else:
         messages.success(request, 'Сначала нужно зарегистрироваться')
         return redirect('home')
+    
+    
+def delete_review(request, pk):
+    review = Reviews.objects.get(id = pk)
+    review.delete()
+    messages.success(request, 'Запись успешно удалена')
+    return redirect('home')
+    
+    
+def add_review(request):
+    if request.user.is_authenticated:
+        return render(request, 'add_review.html', {})
+    else: redirect('home')
+    
+    
+def all_users(request):
+    records = Record.objects.all()
+    
+    if request.user.is_authenticated:
+        return render(request, 'all_users.html', {'records' : records})
+    else: redirect('home')

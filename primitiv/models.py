@@ -13,3 +13,11 @@ class Record(models.Model):
     
     def __str__(self):
         return(f'{self.last_name} {self.first_name}')
+    
+class Reviews(models.Model):
+    user_id = models.ForeignKey(Record, on_delete = models.CASCADE)
+    review = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    
+    def __str__(self):
+        return(f'{self.review}')
